@@ -1,6 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
-import { Image, Pressable, Text, TouchableOpacity, View, Animated } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+  Animated,
+} from "react-native";
 import tw from "@/lib/tw";
 import { Products } from "@/types/products";
 import { useRouter } from "expo-router";
@@ -12,6 +19,7 @@ type Props = {
 
 export default function ProductCard({ item, index }: Props) {
   const router = useRouter();
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.96)).current;
@@ -41,6 +49,24 @@ export default function ProductCard({ item, index }: Props) {
       },
     });
   };
+  const opacity = useRef(new Animated.Value(0.5)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.5,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, []);
 
   return (
     <Animated.View
@@ -83,11 +109,22 @@ export default function ProductCard({ item, index }: Props) {
               ]}
             />
           </View>
-
+          {!imageLoaded && (
+            <Animated.View
+              style={[
+                tw`absolute inset-0 items-center justify-center rounded-xl bg-stone-100 border border-stone-200`,
+                { opacity },
+              ]}
+            >
+              <View style={tw`w-35 h-35 rounded-2xl shadow bg-stone-200`} />
+              <View style={tw`w-20 h-2 rounded-full bg-stone-300 mt-4`} />
+            </Animated.View>
+          )}
           <Image
             source={{ uri: item.imageCover }}
             resizeMode="contain"
             style={tw`w-full h-48`}
+            onLoad={() => setImageLoaded(true)}
           />
         </View>
 
@@ -149,7 +186,9 @@ export default function ProductCard({ item, index }: Props) {
           </View>
 
           <Pressable style={tw`bg-stone-900 rounded-xl mt-4 py-3 items-center`}>
-            <Text style={tw`text-white text-sm font-semibold`}>Add to Cart</Text>
+            <Text style={tw`text-white text-sm font-semibold`}>
+              Add to Cart
+            </Text>
           </Pressable>
         </View>
       </TouchableOpacity>

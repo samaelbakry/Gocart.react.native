@@ -51,7 +51,7 @@ export default function FilterList({ value, onChange }: Props) {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8}}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8 }}
         ItemSeparatorComponent={() => <View className="w-3" />}
         renderItem={({ item }) => (
           <FilterItem
