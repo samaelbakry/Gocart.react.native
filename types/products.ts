@@ -1,4 +1,3 @@
-
 export type Products = {
   sold: number
   images: string[]

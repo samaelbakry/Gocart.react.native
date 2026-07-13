@@ -1,4 +1,3 @@
-
 const API_URL = process.env.EXPO_PUBLIC_BASE_URL
 
 export async function getAllProducts() {
