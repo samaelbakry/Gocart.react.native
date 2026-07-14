@@ -17,7 +17,7 @@ export default function Header({ heading, primaryText, subText }: Props) {
         <View style={tw`flex-1`} />
       </View>
 
-      <View style={tw`px-5 pb-6 border-b border-stone-200 relative z-10`}>
+      <View style={tw`px-5 pb-6 border-b border-stone-200 relative z-10 mt-2`}>
         <Text style={tw`text-4xl font-light tracking-tight text-stone-900`}>
           {heading}{" "}
           <Text style={tw`font-serif italic text-primary`}>{primaryText}</Text>
