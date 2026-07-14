@@ -1,6 +1,6 @@
 import tw from "@/lib/tw";
 import React from "react";
-import { Text, TouchableOpacity, FlatList, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 export const FILTER_DATA = [
   { id: "all", name: "All" },
@@ -19,7 +19,7 @@ const FilterItem = ({ item, isSelected, onPress }: FilterItemProps) => {
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.7}
-      style={tw`px-5 py-2 mx-2 mt-5 rounded-full border justify-center items-center ${
+      style={tw`px-3 py-2 mx-1 mt-1 rounded-full border justify-center items-center ${
         isSelected
           ? "bg-stone-900 border-stone-900"
           : "bg-white border-stone-200"

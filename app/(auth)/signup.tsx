@@ -7,6 +7,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
@@ -16,8 +17,7 @@ import tw from "@/lib/tw";
 import { signupSchema, SignupFormData } from "@/schemas/authschema";
 import { signupFn } from "@/services/authServices";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { selectLoading } from "@/store/slices/authSlice";
-import { setLoading } from "@/store/slices/appSlice";
+import { selectLoading, setLoading } from "@/store/slices/authSlice";
 
 export default function Signup() {
   const router = useRouter();
@@ -41,17 +41,23 @@ export default function Signup() {
   });
 
   const onSubmit = async (data: SignupFormData) => {
-    await signupFn(data);
-    router.replace("/login");
-    try {
-      dispatch(setLoading(true));
-      await signupFn(data);
-      router.replace("/(auth)/login");
-    } catch (err) {
-      dispatch(setLoading(false));
-      console.log(err);
-    }
-  };
+  try {
+    dispatch(setLoading(true));
+    const res = await signupFn(data);
+    if (res.message !== "success") {
+        dispatch(setLoading(false));
+        Alert.alert("Error", res.message);
+        return;
+      }
+
+    dispatch(setLoading(false));
+
+    router.replace("/(auth)/login");
+  } catch (err) {
+    dispatch(setLoading(false));
+    Alert.alert("Error", err as string);
+  }
+};
 
   return (
     <Container style={{ flex: 1 }}>

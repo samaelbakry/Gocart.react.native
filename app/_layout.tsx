@@ -5,9 +5,9 @@ import TanStackProvider from "@/providers/TanStackProvider";
 export default function RootLayout() {
   return (
     <ReduxProvider>
-      <TanStackProvider>
-       <AppNavigator/>
-      </TanStackProvider>
+        <TanStackProvider>
+          <AppNavigator />
+        </TanStackProvider>
     </ReduxProvider>
   );
 }

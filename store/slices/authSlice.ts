@@ -2,10 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export type User = {
- _id:string,
   name: string,
   email:string,
-  phone:string
+  role:string
 };
 
 export type AuthStateType ={
@@ -30,6 +29,7 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.authenticated = true;
+      state.loading = false;
     },
     setLoading:(state , action:PayloadAction<boolean>)=>{
       state.loading = action.payload

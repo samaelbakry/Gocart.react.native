@@ -12,7 +12,7 @@ export async function signupFn(signupData: SignupFormData) {
       },
     });
 
-    const data = res.json();
+    const data =await res.json();
     return data;
   } catch (error) {
     console.log(error);
@@ -28,7 +28,7 @@ export async function loginFn(loginData: LoginFormData) {
       },
     });
 
-    const data = res.json();
+    const data = await res.json();
     return data;
   } catch (error) {
     console.log(error);

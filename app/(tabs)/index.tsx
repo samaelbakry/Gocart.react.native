@@ -3,16 +3,20 @@ import CategoriesCard from "@/components/categories/CategoriesCard";
 import ProductCard from "@/components/products/ProductCard";
 import Container from "@/components/ui/Container";
 import FilterList from "@/components/ui/FilterList";
+import GreetingHeader from "@/components/ui/GreetingHeader";
 import Header from "@/components/ui/Header";
 import SkeletonList from "@/components/ui/SkeletonList";
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
 import { getAllProducts, getBrands, getCategories } from "@/services/homePageServices";
+import { selectedUser } from "@/store/slices/authSlice";
+import { useAppSelector } from "@/store/store";
 import React, { useState } from "react";
 import { FlatList } from "react-native";
 
 export default function Home() {
   const [filter, setFilter] = useState<"all" | "brands" | "categories">("all");
+  const user = useAppSelector(selectedUser);
 
   const { data: products, isPending: productsLoading } = useFetch({
     queryFn: getAllProducts,
@@ -29,15 +33,16 @@ export default function Home() {
 
   return (
     <Container style={{ flex: 1 }}>
+      {user && <GreetingHeader/>}
       <FilterList value={filter} onChange={setFilter} />
+
       {filter === "all" && (
         <>
           <Header
             heading="The Full"
             primaryText="Collection"
             subText="Every piece, every house, one catalog — curated for those who notice the details."
-          />
-
+            />
           {productsLoading ? (
             <SkeletonList />
           ) : (

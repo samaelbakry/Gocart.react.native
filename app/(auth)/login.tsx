@@ -1,23 +1,27 @@
-import React from "react";
+import Container from "@/components/ui/Container";
+import tw from "@/lib/tw";
+import { LoginFormData, loginSchema } from "@/schemas/authschema";
+import { loginFn } from "@/services/authServices";
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
+  selectLoading,
+  setCredentials,
+  setLoading
+} from "@/store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Container from "@/components/ui/Container";
-import tw from "@/lib/tw";
-import { loginSchema, LoginFormData } from "@/schemas/authschema";
-import { loginFn } from "@/services/authServices";
-import { useAppDispatch, useAppSelector } from "@/store/store";
-import { selectLoading, setCredentials } from "@/store/slices/authSlice";
-import { setLoading } from "@/store/slices/appSlice";
 
 export default function Login() {
   const router = useRouter();
@@ -38,20 +42,31 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
+      
       dispatch(setLoading(true));
       const res = await loginFn(data);
+      if (res.message !== "success") {
+        dispatch(setLoading(false));
+        Alert.alert("Error", res.message);
+        return;
+      }
+
       dispatch(
         setCredentials({
           user: res.user,
           token: res.token,
         }),
       );
-      router.replace("/");
+      router.replace("/")
+
+     dispatch(setLoading(false));
     } catch (err) {
       dispatch(setLoading(false));
-      console.log(err);
+      Alert.alert("Error", err as string);
     }
   };
+
+
 
   return (
     <Container style={{ flex: 1 }}>
@@ -169,7 +184,11 @@ export default function Login() {
               onPress={handleSubmit(onSubmit)}
               style={tw`bg-stone-900 rounded-xl py-4 items-center mt-4 shadow-sm`}
             >
-              <Text  style={tw`text-white text-sm font-semibold tracking-wide uppercase`}>{isLoading ? "Loading..." : "Login"}</Text>
+              <Text
+                style={tw`text-white text-sm font-semibold tracking-wide uppercase`}
+              >
+                {isLoading ? "Loading..." : "Login"}
+              </Text>
             </TouchableOpacity>
 
             <View style={tw`flex-row justify-center items-center mt-2`}>
