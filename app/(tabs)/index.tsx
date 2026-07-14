@@ -7,9 +7,7 @@ import Header from "@/components/ui/Header";
 import SkeletonList from "@/components/ui/SkeletonList";
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
-import { getBrands } from "@/services/getBrands";
-import { getCategories } from "@/services/getCategories";
-import { getAllProducts } from "@/services/getProduct";
+import { getAllProducts, getBrands, getCategories } from "@/services/homePageServices";
 import React, { useState } from "react";
 import { FlatList } from "react-native";
 
