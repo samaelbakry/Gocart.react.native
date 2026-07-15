@@ -16,7 +16,7 @@ import { FlatList } from "react-native";
 
 export default function Home() {
   const [filter, setFilter] = useState<"all" | "brands" | "categories">("all");
-  const user = useAppSelector(selectedUser);
+  const user = useAppSelector(selectedUser)
 
   const { data: products, isPending: productsLoading } = useFetch({
     queryFn: getAllProducts,
@@ -65,7 +65,7 @@ export default function Home() {
           <Header
             heading="Houses of"
             primaryText="Design"
-            subText="Discover global and local houses shaping contemporary aesthetics,architecture, and craftsmanship."
+            // subText="Discover global and local houses shaping contemporary aesthetics,architecture, and craftsmanship."
           />
 
           {brandLoading ? (
@@ -89,7 +89,7 @@ export default function Home() {
           <Header
             heading="Department"
             primaryText="Indices"
-            subText="Browse through unified taxonomic archives partitioned by utility, material essence, and structural intent.."
+            // subText="Browse through unified taxonomic archives partitioned by utility, material essence, and structural intent.."
           />
 
           {categoriesLoading ? (

@@ -1,16 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
-import {
-  Image,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-  Animated,
-} from "react-native";
 import tw from "@/lib/tw";
 import { Products } from "@/types/products";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Image,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import AddToCartButton from "../ui/AddToCartButton";
 
 type Props = {
   item: Products;
@@ -159,7 +159,7 @@ export default function ProductCard({ item, index }: Props) {
           <View
             style={tw`flex-row justify-between items-center border-t border-stone-200 mt-4 pt-3`}
           >
-            <Text style={tw`font-bold text-stone-900`}>
+            <Text style={tw`font-bold text-stone-900 mb-2`}>
               {item.price}
               <Text
                 style={[
@@ -172,7 +172,7 @@ export default function ProductCard({ item, index }: Props) {
               </Text>
             </Text>
 
-            <View style={tw`flex-row items-center`}>
+            <View style={tw`flex-row items-center mb-1`}>
               <Ionicons name="star" size={12} color="#fbbf24" />
               <Text
                 style={[
@@ -184,12 +184,7 @@ export default function ProductCard({ item, index }: Props) {
               </Text>
             </View>
           </View>
-
-          <Pressable style={tw`bg-stone-900 rounded-xl mt-4 py-3 items-center`}>
-            <Text style={tw`text-white text-sm font-semibold`}>
-              Add to Cart
-            </Text>
-          </Pressable>
+          <AddToCartButton productId={item._id} /> 
         </View>
       </TouchableOpacity>
     </Animated.View>

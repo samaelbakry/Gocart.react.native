@@ -1,3 +1,4 @@
+import AddToCartButton from "@/components/ui/AddToCartButton";
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
 import { getSpecificProduct } from "@/services/homePageServices";
@@ -333,14 +334,11 @@ export default function ProductDetails() {
           <Ionicons name="heart-outline" size={20} color="#44403c" />
         </Pressable>
 
-        <Pressable
-          disabled={itemDetails.quantity === 0}
-          style={tw`flex-1 bg-stone-900 rounded-xl py-4 items-center justify-center ${itemDetails.quantity === 0 ? "bg-stone-300" : ""}`}
+        <View
+          style={tw`flex-1 bg-stone-900 rounded-xl items-center justify-center ${itemDetails.quantity === 0 ? "bg-stone-300" : ""}`}
         >
-          <Text style={tw`text-white text-sm font-semibold`}>
-            {itemDetails.quantity > 0 ? "Add to Cart" : "Out of Stock"}
-          </Text>
-        </Pressable>
+          <AddToCartButton productId={id}/>
+        </View>
       </View>
     </View>
   );

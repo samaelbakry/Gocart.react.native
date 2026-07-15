@@ -4,8 +4,8 @@ import tw from "@/lib/tw";
 
 type Props = {
   heading: string;
-  primaryText: string;
-  subText: string;
+  primaryText?: string;
+  subText?: string;
 };
 
 export default function Header({ heading, primaryText, subText }: Props) {
@@ -22,12 +22,13 @@ export default function Header({ heading, primaryText, subText }: Props) {
           {heading}{" "}
           <Text style={tw`font-serif italic text-primary`}>{primaryText}</Text>
         </Text>
-
-        <Text
-          style={tw`text-sm text-stone-500 font-light leading-relaxed mt-3`}
-        >
-          {subText}
-        </Text>
+        {subText && (
+          <Text
+            style={tw`text-sm text-stone-500 font-light leading-relaxed mt-3`}
+          >
+            {subText}
+          </Text>
+        )}
       </View>
     </>
   );
