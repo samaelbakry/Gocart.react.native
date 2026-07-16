@@ -3,14 +3,8 @@ import { Products } from "@/types/products";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Image,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
-import AddToCartButton from "../ui/AddToCartButton";
+import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
+import AddToCartButton from "../cart/AddToCartButton";
 
 type Props = {
   item: Products;
@@ -184,7 +178,7 @@ export default function ProductCard({ item, index }: Props) {
               </Text>
             </View>
           </View>
-          <AddToCartButton productId={item._id} /> 
+          <AddToCartButton productId={item._id} />
         </View>
       </TouchableOpacity>
     </Animated.View>

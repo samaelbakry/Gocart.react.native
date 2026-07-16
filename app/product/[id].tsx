@@ -1,4 +1,5 @@
-import AddToCartButton from "@/components/ui/AddToCartButton";
+import AddToCartButton from "@/components/cart/AddToCartButton";
+import AddToWishlistButton from "@/components/wishlist/AddToWishlistButton";
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
 import { getSpecificProduct } from "@/services/homePageServices";
@@ -328,16 +329,10 @@ export default function ProductDetails() {
       <View
         style={tw`absolute bottom-0 left-0 right-0 bg-white border-t border-stone-200 p-5 pb-8 flex-row items-center gap-4`}
       >
-        <Pressable
-          style={tw`border border-stone-200 p-3.5 rounded-xl justify-center items-center bg-stone-50`}
-        >
-          <Ionicons name="heart-outline" size={20} color="#44403c" />
-        </Pressable>
+        <AddToWishlistButton productId={id} />
 
-        <View
-          style={tw`flex-1 bg-stone-900 rounded-xl items-center justify-center ${itemDetails.quantity === 0 ? "bg-stone-300" : ""}`}
-        >
-          <AddToCartButton productId={id}/>
+        <View style={tw`flex-1`}>
+          <AddToCartButton productId={id} />
         </View>
       </View>
     </View>

@@ -1,46 +1,24 @@
-import CartScreenCard from "@/components/cart/CartScreenCard";
+import WishlistCard from "@/components/wishlist/WishlistCard";
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
-import { clearUserCart, getLoggedUserCart } from "@/services/cart";
-import { setClearCart } from "@/store/slices/cartSlice";
-import { useAppDispatch } from "@/store/store";
-import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
-export default function Cart() {
-  const { data: CartProducts, isPending } = useFetch({
-    queryFn: getLoggedUserCart,
-    queryKey: ["cartProducts"],
+import { getLoggedUserWishlist } from "@/services/wishlist";
+
+export default function Wishlist() {
+  const { data: WishlistData, isPending } = useFetch({
+    queryFn: getLoggedUserWishlist,
+    queryKey: ["wishlistProducts"],
   });
 
-  const queryClient = useQueryClient()
-  const dispatch = useAppDispatch()
-
-  const handleClear = async () => {
-    Alert.alert("Clear", "Do you want to clear your cart?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Sure",
-        style: "destructive",
-        onPress: async () => {
-          await clearUserCart();
-          queryClient.invalidateQueries({queryKey:["cartProducts"]})
-          dispatch(setClearCart())
-        },
-      },
-    ]);
-  };
-
-  const cartList = CartProducts?.data?.products ?? [];
-  const totalCount = cartList.length;
+  const wishlistList = WishlistData?.data ?? [];
+  const totalCount = wishlistList.length;
 
   return (
     <View style={tw`flex-1 bg-stone-50 relative`}>
@@ -59,7 +37,7 @@ export default function Cart() {
               { fontFamily: "monospace" },
             ]}
           >
-            Selected Items
+            Saved Items
           </Text>
         </View>
 
@@ -67,7 +45,7 @@ export default function Cart() {
           <Text
             style={tw`text-3xl font-light tracking-tight text-stone-900 uppercase`}
           >
-            Your Bag
+            Wishlist
           </Text>
           <View style={tw`flex-row justify-between items-center`}>
             <Text
@@ -76,24 +54,9 @@ export default function Cart() {
                 { fontFamily: "monospace" },
               ]}
             >
-              Curated Editions ({totalCount})
+              Favourited items ({totalCount})
             </Text>
-            {totalCount > 0 && (
-              <TouchableOpacity
-                onPress={handleClear}
-                activeOpacity={0.5}
-                style={tw`flex-row items-center gap-1 py-2 px-2 bg-red-100 rounded-xl`}
-              >
-                <Text
-                  style={[
-                    tw`text-[9px] uppercase tracking-widest text-red-600 font-semibold`,
-                    { fontFamily: "monospace" },
-                  ]}
-                >
-                  Clear Cart
-                </Text>
-              </TouchableOpacity>
-            )}
+            
           </View>
         </View>
 
@@ -111,16 +74,20 @@ export default function Cart() {
                 { fontFamily: "monospace" },
               ]}
             >
-              This bag is currently empty — find something beautiful to add.
+              Your wishlist is empty — save items here for later inspiration.
             </Text>
           </View>
         ) : (
           <FlatList
-            data={cartList}
-            keyExtractor={(item) => item.product._id}
+            data={wishlistList}
+            keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={tw`pb-12`}
-            renderItem={({ item }) => <CartScreenCard product={item} />}
+            renderItem={({ item }) => (
+              <WishlistCard
+                product={item}
+              />
+            )}
           />
         )}
       </View>

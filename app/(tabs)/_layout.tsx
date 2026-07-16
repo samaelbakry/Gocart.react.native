@@ -89,12 +89,31 @@ export default function TabLayout() {
             backgroundColor: "green",
             color: "white",
           },
-          tabBarIcon: ({ size, color }) => (
-            <Ionicons name="cart-outline" color={color} size={size} />
+          tabBarIcon: ({ size , focused }) => (
+            <Ionicons name="cart-outline" color={focused ? activeColor  : inactiveColor} size={size} />
           ),
         }}
       />
 
+      <Tabs.Screen
+        name="wishlist"
+        options={{
+          title: "Wishlist",
+          tabBarIcon: ({ focused }) => (
+            <View className="items-center justify-center h-7 relative">
+              <Ionicons
+                name="heart-circle"
+                size={21}
+                color={focused ? activeColor : inactiveColor}
+                strokeWidth={1.5}
+              />
+              {focused && (
+                <View className="absolute -bottom-1 w-1 h-1 rounded-full bg-emerald-600" />
+              )}
+            </View>
+          ),
+        }}
+      />
       <Tabs.Screen
         name="profile"
         options={{
