@@ -35,7 +35,7 @@ export const { setCart , setClearCart} = cartSlice.actions;
 
 export const selectedCart = (state: RootState) => state.cart.cart;
 export const selectedCartId = (state: RootState) => state.cart.cartid;
-export const selectedCartCount = (state: RootState) => state.cart.numOfCartItems;
+export const selectedCartCount = (state: RootState) => state.cart.cart?.products.reduce((acc , item ) => acc + item.count , 0 ) ?? 0 ;
 export const selectedTotalCartCount = (state: RootState) => state.cart.cart?.totalCartPrice ?? 0;
 
 export default cartSlice.reducer;

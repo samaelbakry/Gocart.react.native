@@ -8,6 +8,7 @@ import Header from "@/components/ui/Header";
 import SkeletonList from "@/components/ui/SkeletonList";
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
+import { getLoggedUserCart } from "@/services/cart";
 import { getAllProducts, getBrands, getCategories } from "@/services/homePageServices";
 import { selectedUser } from "@/store/slices/authSlice";
 import { useAppSelector } from "@/store/store";
@@ -29,6 +30,10 @@ export default function Home() {
   const { data: categories, isPending: categoriesLoading } = useFetch({
     queryFn: getCategories,
     queryKey: ["getAllCategories"],
+  });
+   useFetch({
+    queryFn: getLoggedUserCart,
+    queryKey: ["cartProducts"],
   });
 
   return (

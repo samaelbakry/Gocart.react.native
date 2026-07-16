@@ -62,3 +62,43 @@ export async function clearUserCart () {
     console.log(error);
   }
 }
+
+export async function updateCartProductQuantity (productId:string , count:number) {
+  const token = store.getState().auth.token;
+  if (!token) {
+    throw Error("user not logged in");
+  }
+  try {
+    const res = await fetch(`${API_URL}/cart/${productId}`, {
+      method:"put",
+      body:JSON.stringify({"count" : count}),
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function removeProductFromCart(productId:string ) {
+  const token = store.getState().auth.token;
+  if (!token) {
+    throw Error("user not logged in");
+  }
+  try {
+    const res = await fetch(`${API_URL}/cart/${productId}`, {
+      method:"delete",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}

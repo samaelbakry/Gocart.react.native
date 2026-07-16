@@ -3,6 +3,7 @@ import { addProductToCart } from "@/services/cart";
 import { setCart } from "@/store/slices/cartSlice";
 import { useAppDispatch } from "@/store/store";
 import { Ionicons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -20,6 +21,7 @@ export default function AddToCartButton({ productId }: Props) {
   const [added, setAdded] = useState(false);
   const [loading, setLoading] = useState(false)
   const disptch = useAppDispatch()
+  const queryClient = useQueryClient()
 
   const handlePress = async () => {
     if (loading || added) return;
@@ -37,6 +39,7 @@ export default function AddToCartButton({ productId }: Props) {
         numOfCartItems: data?.numOfCartItems 
         }))
       }
+      queryClient.invalidateQueries({queryKey:["cartProducts"]})
     } catch (error) {
       Alert.alert(
         "Error",
@@ -45,7 +48,7 @@ export default function AddToCartButton({ productId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <Pressable
