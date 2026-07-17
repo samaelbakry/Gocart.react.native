@@ -1,6 +1,7 @@
 import { selectedAuthenticated } from "@/store/slices/authSlice";
 import { useAppSelector } from "@/store/store";
 import { Stack  } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const authenticated = useAppSelector(selectedAuthenticated);
@@ -18,6 +19,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)/login" />
         <Stack.Screen name="(auth)/signup" />
       </Stack.Protected>
+      <StatusBar style="dark" />
     </Stack>
   );
 }

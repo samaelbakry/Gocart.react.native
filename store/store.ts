@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from "react-redux";
 import authSlice from "./slices/authSlice";
 import CartSlice from "./slices/cartSlice";
+import addressSlice from "./slices/addressSlice";
 
 
 export const store = configureStore({
     reducer:{
         auth:authSlice,
-        cart:CartSlice
+        cart:CartSlice,
+        address:addressSlice
     }
 })
 
