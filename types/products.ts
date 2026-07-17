@@ -14,6 +14,7 @@ export type Products = {
   brand: Brand
   ratingsAverage: number
   createdAt: string
+  reviews:[]
   updatedAt: string
   id: string
 }
