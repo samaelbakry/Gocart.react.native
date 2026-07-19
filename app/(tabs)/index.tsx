@@ -54,6 +54,7 @@ export default function Home() {
             <FlatList
               data={products}
               keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
               numColumns={2}
               columnWrapperStyle={tw`gap-4 px-5`}
               contentContainerStyle={tw`pt-6 pb-10`}

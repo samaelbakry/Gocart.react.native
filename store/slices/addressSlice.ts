@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export type AddressStateType = {
+  id:string;
   name: string;
   details: string;
   phone: string;
@@ -9,6 +10,7 @@ export type AddressStateType = {
 };
 
 const initialState: AddressStateType = {
+  id:"",
   name: "",
   details: "",
   phone: "",
@@ -23,6 +25,7 @@ const addressSlice = createSlice({
       state,
       action: PayloadAction<AddressStateType>
     ) => {
+      state.id = action.payload.id
       state.name = action.payload.name;
       state.details = action.payload.details;
       state.phone = action.payload.phone;
@@ -30,6 +33,7 @@ const addressSlice = createSlice({
     },
 
     clearAddress: (state) => {
+      state.id="";
       state.name = "";
       state.details = "";
       state.phone = "";

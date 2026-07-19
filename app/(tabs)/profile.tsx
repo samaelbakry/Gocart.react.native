@@ -13,8 +13,12 @@ import { Ionicons } from "@expo/vector-icons";
 import tw from "@/lib/tw";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { logout, selectedUser } from "@/store/slices/authSlice";
-import { addAddress } from "@/services/address";
-import { selectedAddress, setAddress } from "@/store/slices/addressSlice";
+import { addAddress, removeAddress } from "@/services/address";
+import {
+  clearAddress,
+  selectedAddress,
+  setAddress,
+} from "@/store/slices/addressSlice";
 import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
@@ -36,15 +40,20 @@ export default function ProfileScreen() {
   const handelSubmition = async () => {
     setLoading(true);
     try {
-      await addAddress(name, details, phone, city);
+      const res = await addAddress(name, details, phone, city);
+
+      const lastAddress = res.data[res.data.length - 1];
+
       dispatch(
         setAddress({
-          name,
-          details,
-          phone,
-          city,
+          id: lastAddress._id,
+          name: lastAddress.name,
+          details: lastAddress.details,
+          phone: lastAddress.phone,
+          city: lastAddress.city,
         }),
       );
+
       setIsEditing(false);
     } catch (error) {
       console.log(error);
@@ -73,7 +82,7 @@ export default function ProfileScreen() {
       ],
       {
         cancelable: true,
-      }
+      },
     );
   };
 
@@ -87,6 +96,23 @@ export default function ProfileScreen() {
 
     setIsEditing((prev) => !prev);
   };
+  const handleRemoveAddress = async () => {
+    try {
+      await removeAddress(address.id);
+
+      dispatch(clearAddress());
+
+      setName("");
+      setDetails("");
+      setPhone("");
+      setCity("");
+
+      Alert.alert("Success", "Address removed successfully.");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "Failed to remove address.");
+    }
+  }
 
   return (
     <ScrollView
@@ -94,13 +120,10 @@ export default function ProfileScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View
-        style={tw`bg-white pt-16 pb-6 items-center w-88 mx-auto rounded-3xl shadow-md border-b border-stone-100 `}
+        style={tw`bg-white pt-16 pb-6 items-center w-88 mx-auto rounded-b-3xl shadow-md border-b border-stone-100 `}
       >
         <View style={tw`relative`}>
-          <Image
-            source={image}
-            style={tw`w-34 h-24 rounded-full`}
-          />
+          <Image source={image} style={tw`w-34 h-24 rounded-full`} />
         </View>
         <Text style={tw`text-xl font-bold text-stone-900`}>
           {user?.name || "User Name"}
@@ -291,6 +314,20 @@ export default function ProfileScreen() {
                     </Text>
                   </View>
                 )}
+              </TouchableOpacity>
+            )}
+            {!!address?.id && !isEditing && (
+              <TouchableOpacity
+                onPress={handleRemoveAddress}
+                style={tw`bg-red-500 rounded-xl py-3 mt-3 flex-row justify-center items-center`}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="trash-outline" size={16} color="white" />
+                <Text
+                  style={tw`text-xs uppercase text-white font-bold tracking-wider ml-2`}
+                >
+                  Remove Address
+                </Text>
               </TouchableOpacity>
             )}
           </View>

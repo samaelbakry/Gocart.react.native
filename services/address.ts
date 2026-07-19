@@ -18,7 +18,26 @@ export async function addAddress(name:string , details:string , phone:string , c
       },
     });
     const data = await res.json();
-    console.log(data)
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function removeAddress(id:string ) {
+  const token = store.getState().auth.token;
+  if (!token) {
+    throw Error("user not logged in");
+  }
+  try {
+    const res = await fetch(`${API_URL}/addresses/${id}`, {
+      method: "delete",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
     return data;
   } catch (error) {
     console.log(error);
