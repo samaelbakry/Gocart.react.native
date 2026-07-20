@@ -2,7 +2,6 @@ import { store } from "@/store/store";
 import { ShippingAddress } from "@/types/cart";
 import * as Linking from "expo-linking";
 
-
 const API_URL_V1 = process.env.EXPO_PUBLIC_BASE_URL;
 const API_URL_V2 = process.env.EXPO_PUBLIC_BASE_URL_VERSION_2;
 

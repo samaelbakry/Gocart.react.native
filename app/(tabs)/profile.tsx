@@ -342,22 +342,11 @@ export default function ProfileScreen() {
           <View
             style={tw`bg-white border border-stone-200 rounded-2xl overflow-hidden`}
           >
+           
             <TouchableOpacity
               style={tw`flex-row justify-between items-center p-4 border-b border-stone-100`}
               activeOpacity={0.6}
-            >
-              <View style={tw`flex-row items-center gap-3`}>
-                <Ionicons name="person-outline" size={18} color="#44403c" />
-                <Text style={tw`text-sm font-medium text-stone-800`}>
-                  Edit Profile Details
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={16} color="#a8a29e" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={tw`flex-row justify-between items-center p-4 border-b border-stone-100`}
-              activeOpacity={0.6}
+              onPress={()=>router.replace("/screens/orderList")}
             >
               <View style={tw`flex-row items-center gap-3`}>
                 <Ionicons name="receipt-outline" size={18} color="#44403c" />

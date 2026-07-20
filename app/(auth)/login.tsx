@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { jwtDecode } from "jwt-decode";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -22,6 +23,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+type TokenPayload = {
+  id: string;
+  name: string;
+  role: string;
+  exp: number;
+  iat: number;
+};
 
 export default function Login() {
   const router = useRouter();
@@ -42,18 +51,21 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      
       dispatch(setLoading(true));
       const res = await loginFn(data);
+      const decode = jwtDecode<TokenPayload>(res.token)
+
       if (res.message !== "success") {
         dispatch(setLoading(false));
         Alert.alert("Error", res.message);
         return;
       }
-
       dispatch(
         setCredentials({
-          user: res.user,
+          user: {
+            ...res.user,
+            id:decode.id
+          },
           token: res.token,
         }),
       );

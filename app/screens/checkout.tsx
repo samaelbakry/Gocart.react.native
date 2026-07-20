@@ -117,7 +117,7 @@ export default function Checkout() {
         const data = await addCashOrder(cartId, cashOrder);
 
         resetCheckout();
-
+        queryClient.invalidateQueries({queryKey:["userOrders"]})
         queryClient.setQueryData(["cartProducts"], null);
 
         Alert.alert("Success", data.message, [
@@ -175,7 +175,7 @@ export default function Checkout() {
 
             <View style={tw`flex-row items-center justify-between mb-3`}>
               <View style={tw`flex-row items-center`}>
-                <Ionicons name="bag-check" size={14} color="#A8A29E" />
+                <Ionicons name="bag-outline" size={14} color="#A8A29E" />
                 <Text
                   style={tw`text-xs text-stone-600 uppercase tracking-wide ml-2`}
                 >
@@ -259,12 +259,9 @@ export default function Checkout() {
               >
                 Comms / Phone Line
               </Text>
-              <View style={tw`relative justify-center`}>
-                <View style={tw`absolute left-3 z-10`}>
-                  <Ionicons name="phone-landscape" size={14} color="#A8A29E" />
-                </View>
+              <View style={tw`relative `}>
                 <TextInput
-                  style={tw`w-full bg-stone-50 border rounded-lg pl-9 pr-3 py-2.5 text-sm text-stone-900 ${
+                  style={tw`w-full bg-stone-50 border rounded-lg pl-2 pr-3 py-2.5 text-sm text-stone-900 ${
                     errors.phone ? "border-red-600" : "border-stone-200"
                   }`}
                   placeholder="01---------"
