@@ -22,3 +22,16 @@ export type Cart = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ShippingAddress = {
+  details: string;
+  phone: string;
+  city: string;
+  postalCode: string;
+}
+
+export type VisaShippingAddress = {
+  details: string;
+  phone: string;
+  city: string;
+}
