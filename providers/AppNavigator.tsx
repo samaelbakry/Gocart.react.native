@@ -3,7 +3,7 @@ import { useAppSelector } from "@/store/store";
 import { Stack  } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-export default function RootLayout() {
+export default function AppNavigator() {
   const authenticated = useAppSelector(selectedAuthenticated);
 
   return (
