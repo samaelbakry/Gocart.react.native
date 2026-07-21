@@ -3,34 +3,36 @@ import { LoginFormData, SignupFormData } from "@/schemas/authschema";
 const API_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
 export async function signupFn(signupData: SignupFormData) {
-  try {
-    const res = await fetch(`${API_URL}/auth/signup`, {
-      method: "post",
-      body: JSON.stringify(signupData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const res = await fetch(`${API_URL}/auth/signup`, {
+    method: "post",
+    body: JSON.stringify(signupData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-    const data =await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "Register failed");
   }
+  return data;
 }
-export async function loginFn(loginData: LoginFormData) {
-  try {
-    const res = await fetch(`${API_URL}/auth/signin`, {
-      method: "post",
-      body: JSON.stringify(loginData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
 
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
+export async function loginFn(loginData: LoginFormData) {
+  const res = await fetch(`${API_URL}/auth/signin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginData),
+  });
+
+  const data = await res.json();
+  console.log(data)
+
+  if (!res.ok) {
+    throw new Error(data.message || "Login failed");
   }
+
+  return data;
 }

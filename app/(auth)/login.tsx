@@ -53,13 +53,14 @@ export default function Login() {
     try {
       dispatch(setLoading(true));
       const res = await loginFn(data);
-      const decode = jwtDecode<TokenPayload>(res.token)
-
+      
       if (res.message !== "success") {
         dispatch(setLoading(false));
         Alert.alert("Error", res.message);
         return;
       }
+      const decode = jwtDecode<TokenPayload>(res.token)
+      
       dispatch(
         setCredentials({
           user: {
@@ -69,16 +70,14 @@ export default function Login() {
           token: res.token,
         }),
       );
-      router.replace("/")
 
      dispatch(setLoading(false));
     } catch (err) {
       dispatch(setLoading(false));
-      Alert.alert("Error", err as string);
+      const error = err instanceof Error ? err.message : "something went wrong"
+      Alert.alert("Error", error);
     }
   };
-
-
 
   return (
     <Container style={{ flex: 1 }}>

@@ -9,28 +9,25 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
-
 useEffect(() => {
-  const prepare = async () => {
-    await SplashScreen.hideAsync();
-
-    setReady(false);
-
+ async function prepare() {
+    try {
+      await SplashScreen.hideAsync();
+    } catch (e) {
+      console.log(e);
+    }
     setTimeout(() => {
       setReady(true);
     }, 2300);
-  };
+  }
 
   prepare();
 }, []);
 
-  if (!ready) {
-    return <AnimatedSplash />;
-  }
   return (
     <ReduxProvider>
       <TanStackProvider>
-        <AppNavigator />
+        {!ready ? <AnimatedSplash/> : <AppNavigator />} 
       </TanStackProvider>
     </ReduxProvider>
   );
