@@ -55,7 +55,8 @@ export default function Signup() {
     router.replace("/(auth)/login");
   } catch (err) {
     dispatch(setLoading(false));
-    Alert.alert("Error", err as string);
+    const error = err instanceof Error ? err.message : "something went wrong"
+    Alert.alert("Error", error);
   }
 };
 

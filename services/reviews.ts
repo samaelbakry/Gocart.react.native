@@ -2,11 +2,7 @@ import { store } from "@/store/store";
 
 const API_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
-export async function CreateReview(
-  productId: string,
-  review: string,
-  rating: number,
-) {
+export async function CreateReview( productId: string,review: string,rating: number) {
   const token = store.getState().auth.token;
 
   if (!token) throw Error("user must be logged in");
@@ -20,7 +16,6 @@ export async function CreateReview(
       },
     });
     const data = await res.json();
-    console.log(data , 'reviewsdata')
     return data
   } catch (error) {
     console.log(error);

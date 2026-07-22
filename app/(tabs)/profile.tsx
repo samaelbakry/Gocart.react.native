@@ -76,7 +76,7 @@ export default function ProfileScreen() {
           style: "destructive",
           onPress: () => {
             dispatch(logout());
-            router.replace("/");
+            router.push("/");
           },
         },
       ],

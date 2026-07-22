@@ -1,18 +1,4 @@
-import Container from "@/components/ui/Container";
-import tw from "@/lib/tw";
-import { LoginFormData, loginSchema } from "@/schemas/authschema";
-import { loginFn } from "@/services/authServices";
-import {
-  selectLoading,
-  setCredentials,
-  setLoading
-} from "@/store/slices/authSlice";
-import { useAppDispatch, useAppSelector } from "@/store/store";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { jwtDecode } from "jwt-decode";
+import React, { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -22,61 +8,57 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
 
-type TokenPayload = {
-  id: string;
-  name: string;
-  role: string;
-  exp: number;
-  iat: number;
-};
+import Container from "@/components/ui/Container";
+import tw from "@/lib/tw";
+import { resetPasswordfn } from "@/services/OTP";
+import {
+  resetPasswordSchema,
+  ResetPasswordFormData,
+} from "@/schemas/otpschemas";
 
-export default function Login() {
+export default function ResetPassword() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const isLoading = useAppSelector(selectLoading);
+  const [loading, setLoading] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       email: "",
-      password: "",
+      newPassword: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: ResetPasswordFormData) => {
     try {
-      dispatch(setLoading(true));
-      const res = await loginFn(data);
-      
-      if (res.message !== "success") {
-        dispatch(setLoading(false));
-        Alert.alert("Error", res.message);
-        return;
-      }
-      const decode = jwtDecode<TokenPayload>(res.token)
-      
-      dispatch(
-        setCredentials({
-          user: {
-            ...res.user,
-            id:decode.id
-          },
-          token: res.token,
-        }),
-      );
+      setLoading(true);
+      await resetPasswordfn(data.email, data.newPassword);
 
-     dispatch(setLoading(false));
-     router.replace("/")
+      Alert.alert(
+        "Success",
+        "Your password has been reset successfully. Please log in with your new password.",
+        [
+          {
+            text: "OK",
+            onPress: () => router.push("/(auth)/login"),
+          },
+        ],
+      );
     } catch (err) {
-      dispatch(setLoading(false));
-      const error = err instanceof Error ? err.message : "something went wrong"
-      Alert.alert("Error", error);
+      const errorMessage =  err instanceof Error ? err.message : "Failed to reset password";
+      Alert.alert("Error", errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,6 +71,7 @@ export default function Login() {
         <ScrollView
           contentContainerStyle={tw`flex-grow justify-center px-5 py-12`}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={tw`absolute inset-0 flex-row px-6`} pointerEvents="none">
             <View style={tw`flex-1 border-r border-stone-200/40`} />
@@ -96,15 +79,23 @@ export default function Login() {
             <View style={tw`flex-1`} />
           </View>
 
-          <View style={tw`mb-10 relative z-10`}>
+          <View style={tw`mb-8 relative z-10`}>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={tw`mb-6 self-start`}
+            >
+              <Text style={tw`text-stone-500 text-xs uppercase tracking-wider`}>
+                ← Back
+              </Text>
+            </TouchableOpacity>
             <Text style={tw`text-4xl font-light tracking-tight text-stone-900`}>
-              Welcome{" "}
-              <Text style={tw`font-serif italic text-primary`}>Back</Text>
+              New{" "}
+              <Text style={tw`font-serif italic text-primary`}>Password</Text>
             </Text>
             <Text
               style={tw`text-sm text-stone-500 font-light leading-relaxed mt-2`}
             >
-              Access your archive, review orders, and explore modern designs.
+              Set a strong password to protect your account archive and access.
             </Text>
           </View>
 
@@ -131,9 +122,11 @@ export default function Login() {
                     placeholderTextColor="#a8a29e"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    autoCorrect={false}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    editable={!loading}
                   />
                 )}
               />
@@ -152,67 +145,66 @@ export default function Login() {
                     { fontFamily: "monospace" },
                   ]}
                 >
-                  Password
+                  New Password
                 </Text>
-                <TouchableOpacity onPress={()=>router.push("/(auth)/forgetPassword")}>
+                <TouchableOpacity
+                  onPress={() => setShowNewPassword((prev) => !prev)}
+                >
                   <Text
                     style={[
                       tw`text-[10px] uppercase text-stone-400`,
                       { fontFamily: "monospace" },
                     ]}
                   >
-                    Forgot?
+                    {showNewPassword ? "Hide" : "Show"}
                   </Text>
                 </TouchableOpacity>
               </View>
               <Controller
                 control={control}
-                name="password"
+                name="newPassword"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     style={[
                       tw`w-full bg-white border rounded-xl px-4 py-3.5 text-stone-900 text-sm`,
-                      errors.password
+                      errors.newPassword
                         ? tw`border-red-500`
                         : tw`border-stone-200`,
                     ]}
                     placeholder="••••••••"
                     placeholderTextColor="#a8a29e"
-                    secureTextEntry
+                    secureTextEntry={!showNewPassword}
+                    autoCapitalize="none"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    editable={!loading}
                   />
                 )}
               />
-              {errors.password && (
+              {errors.newPassword && (
                 <Text style={tw`text-[10px] text-red-500 mt-1`}>
-                  {errors.password.message}
+                  {errors.newPassword.message}
                 </Text>
               )}
             </View>
             <TouchableOpacity
-              disabled={isLoading}
+              disabled={loading}
               onPress={handleSubmit(onSubmit)}
-              style={tw`bg-stone-900 rounded-xl py-4 items-center mt-4 shadow-sm`}
+              style={tw`bg-stone-900 rounded-xl py-4 items-center mt-2 shadow-sm ${
+                loading ? "opacity-70" : ""
+              }`}
             >
-              <Text
-                style={tw`text-white text-sm font-semibold tracking-wide uppercase`}
-              >
-                {isLoading ? "Loading..." : "Login"}
-              </Text>
-            </TouchableOpacity>
-
-            <View style={tw`flex-row justify-center items-center mt-2`}>
-              <Text style={tw`text-stone-500 text-sm font-light`}>
-                Don&apos;t have an account?{" "}
-              </Text>
-              <TouchableOpacity onPress={() => router.push("/signup")}>
-                <Text style={tw`text-primary text-sm font-semibold`}>
-                  Sign Up
+              {loading ? (
+                <ActivityIndicator color="#ffffff" size="small" />
+              ) : (
+                <Text
+                  style={tw`text-white text-sm font-semibold tracking-wide uppercase`}
+                >
+                  Reset Password
                 </Text>
-              </TouchableOpacity>
-            </View>
+              )}
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
