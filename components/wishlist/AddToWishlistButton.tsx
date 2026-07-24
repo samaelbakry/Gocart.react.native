@@ -1,30 +1,46 @@
 import { useFetch } from "@/hooks/useFetch";
 import tw from "@/lib/tw";
 import { addProductToWishlist, getLoggedUserWishlist } from "@/services/wishlist";
+import { selectedAuthenticated } from "@/store/slices/authSlice";
+import { useAppSelector } from "@/store/store";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Alert, Pressable } from "react-native";
 
-export default function AddToWishlistButton({
-  productId,
-}: {
-  productId: string;
-}) {
+export default function AddToWishlistButton({ productId}: { productId: string }) {
+
  const { data: WishlistData } = useFetch({
     queryFn: getLoggedUserWishlist,
     queryKey: ["wishlistProducts"],
   });
 
   const wishlistList = WishlistData?.data ?? [];
-  
   const added = wishlistList?.some((item:any)=>(item._id === productId)) ?? false
 
   const [loading, setLoading] = useState(false);
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
+  const authenticated = useAppSelector(selectedAuthenticated)
+  const router = useRouter()
 
   const handlePress = async () => {
     if (loading || added) return;
+
+      if (!authenticated) {
+      Alert.alert(
+        "Login Required",
+        "Please log in or sign up to complete this process.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Login",
+            style: "default",
+            onPress: () => router.push("/(auth)/login"),
+          },
+        ],
+      );
+    }
 
     try {
       setLoading(true);
@@ -34,9 +50,7 @@ export default function AddToWishlistButton({
       }
       queryClient.invalidateQueries({ queryKey: ["wishlistProducts"] });
     } catch (error) {
-      Alert.alert(
-        "Error",
-        error instanceof Error ? error.message : "Something went wrong",
+      console.log("Error", error instanceof Error ? error.message : "Something went wrong",
       );
     } finally {
       setLoading(false);

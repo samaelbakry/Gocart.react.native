@@ -1,9 +1,11 @@
 import tw from "@/lib/tw";
 import { addProductToCart } from "@/services/cart";
+import { selectedAuthenticated } from "@/store/slices/authSlice";
 import { selectedCart, setCart } from "@/store/slices/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 
@@ -13,14 +15,32 @@ type Props = {
 
 export default function AddToCartButton({ productId }: Props) {
   const [loading, setLoading] = useState(false);
+
   const disptch = useAppDispatch();
-  const cart = useAppSelector(selectedCart)
-  const added = cart?.products.some((item)=>(item.product._id === productId))
-  
+  const authenticated = useAppSelector(selectedAuthenticated);
+  const cart = useAppSelector(selectedCart);
+  const router = useRouter();
+  const added = cart?.products.some((item) => item.product._id === productId);
+
   const queryClient = useQueryClient();
 
   const handlePress = async () => {
     if (loading || added) return;
+
+    if (!authenticated) {
+      Alert.alert(
+        "Login Required",
+        "Please log in or sign up to complete this process.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Login",
+            style: "default",
+            onPress: () => router.push("/(auth)/login"),
+          },
+        ],
+      );
+    }
 
     try {
       setLoading(true);
@@ -37,7 +57,7 @@ export default function AddToCartButton({ productId }: Props) {
       }
       queryClient.invalidateQueries({ queryKey: ["cartProducts"] });
     } catch (error) {
-      Alert.alert(
+      console.log(
         "Error",
         error instanceof Error ? error.message : "Something went wrong",
       );

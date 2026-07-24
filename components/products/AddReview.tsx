@@ -4,6 +4,9 @@ import tw from "@/lib/tw";
 import { Ionicons } from "@expo/vector-icons";
 import { CreateReview } from "@/services/reviews";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAppSelector } from "@/store/store";
+import { selectedAuthenticated } from "@/store/slices/authSlice";
+import { useRouter } from "expo-router";
 
 export default function AddReview({ productId }: { productId: string }) {
   const [review, setReview] = useState("");
@@ -11,8 +14,26 @@ export default function AddReview({ productId }: { productId: string }) {
   const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient()
+  const authenticated = useAppSelector(selectedAuthenticated)
+  const router = useRouter()
 
   const handleSubmition = async () => {
+    
+     if (!authenticated) {
+      Alert.alert(
+        "Login Required",
+        "Please log in or sign up to complete this process.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Login",
+            style: "default",
+            onPress: () => router.push("/(auth)/login"),
+          },
+        ],
+      );
+    }
+
     if (!rating) {
       Alert.alert("Rating Required", "Please select a star rating first.");
       return;
@@ -27,10 +48,10 @@ export default function AddReview({ productId }: { productId: string }) {
       queryClient.invalidateQueries({ queryKey: ["productReviews", productId]})
       setRating(0);
       setReview("");
-      Alert.alert("Success", "Thank you! Your review has been submitted.");
+      Alert.alert("Success", "Thank you! Your review has been submitted");
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Something went wrong. Please try again later.");
+      const errorMsg = error instanceof Error ? error : "Something went wrong. Please try again later"
+      console.log(errorMsg);
     } finally {
       setLoading(false);
     }
